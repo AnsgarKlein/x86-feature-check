@@ -1,0 +1,30 @@
+# Generic editor
+*~
+*.bak
+
+# vim
+*.swp
+Session.vim
+Sessionx.vim
+.netrwhist
+
+# Visual Studio Code
+.vscode/
+
+# Windows
+Thumbs.db
+$RECYCLE.BIN/
+
+# Linux
+.directory
+.Trash-*
+
+# virtualenv
+env/
+venv/
+.env/
+.venv/
+
+# python
+__pycache__/
+*.pyc
