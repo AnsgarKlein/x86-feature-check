@@ -3,7 +3,13 @@
 import re
 import sys
 
-FLAG_NAMES = {
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import Set
+from typing import Union
+
+FLAG_NAMES: Dict[str, Union[str, List[str]]] = {
     'AVX2': 'avx2',
     'AVX512BW': 'avx512bw',
     'AVX512CD': 'avx512cd',
@@ -35,7 +41,7 @@ FLAG_NAMES = {
     'SSSE3': 'ssse3',
 }
 
-X86_64_REQUIRED_FEATURES = [
+X86_64_REQUIRED_FEATURES: List[str] = [
     'CMOV',
     'CMPXCHG8B',
     'FPU',
@@ -46,7 +52,7 @@ X86_64_REQUIRED_FEATURES = [
     'SSE2',
 ]
 
-X86_64_V2_REQUIRED_FEATURES = [
+X86_64_V2_REQUIRED_FEATURES: List[str] = [
     'CMPXCHG16B',
     'LAHF',
     'POPCNT',
@@ -56,7 +62,7 @@ X86_64_V2_REQUIRED_FEATURES = [
     'SSSE3',
 ]
 
-X86_64_V3_REQUIRED_FEATURES = [
+X86_64_V3_REQUIRED_FEATURES: List[str] = [
     'AVX',
     'AVX2',
     'BMI1',
@@ -68,7 +74,7 @@ X86_64_V3_REQUIRED_FEATURES = [
     'OSXSAVE',
 ]
 
-X86_64_V4_REQUIRED_FEATURES = [
+X86_64_V4_REQUIRED_FEATURES: List[str] = [
     'AVX512BW',
     'AVX512CD',
     'AVX512DQ',
@@ -80,7 +86,7 @@ def main():
     flags = get_current_cpu_flags()
     print('{}'.format(get_max_feature_set(flags)))
 
-def get_current_cpu_flags():
+def get_current_cpu_flags() -> Set[str]:
     flags = set()
 
     # Read /proc/cpuinfo
@@ -103,35 +109,37 @@ def get_current_cpu_flags():
 
     return flags
 
-def has_feature(flags, feature):
+def has_feature(flags: Set[str], feature: str) -> bool:
     if not isinstance(feature, str):
         raise Exception('Given feature is not of type str')
     if feature not in FLAG_NAMES:
         raise Exception('Unknown feature flag "{}"'.format(feature))
 
-    if isinstance(FLAG_NAMES[feature], str):
-        required_flags = [FLAG_NAMES[feature]]
-    elif isinstance(FLAG_NAMES[feature], list):
-        required_flags = FLAG_NAMES[feature]
+    # Check if there are multiple flags that signal this feature
+    flag = FLAG_NAMES[feature]
+    if isinstance(flag, str):
+        required_flags = [flag]
+    elif isinstance(flag, list):
+        required_flags = flag
 
     return True in (flag in flags for flag in required_flags)
 
-def supports_feature_set(flags, featureset):
+def supports_feature_set(flags: Set[str], featureset: List[str]) -> bool:
     return not False in (has_feature(flags, feat) for feat in featureset)
 
-def supports_x86v1(flags):
+def supports_x86v1(flags: Set[str]) -> bool:
     return supports_feature_set(flags, X86_64_REQUIRED_FEATURES)
 
-def supports_x86v2(flags):
+def supports_x86v2(flags: Set[str]) -> bool:
     return supports_feature_set(flags, X86_64_V2_REQUIRED_FEATURES)
 
-def supports_x86v3(flags):
+def supports_x86v3(flags: Set[str]) -> bool:
     return supports_feature_set(flags, X86_64_V3_REQUIRED_FEATURES)
 
-def supports_x86v4(flags):
+def supports_x86v4(flags: Set[str]) -> bool:
     return supports_feature_set(flags, X86_64_V4_REQUIRED_FEATURES)
 
-def get_max_feature_set(flags):
+def get_max_feature_set(flags) -> Optional[str]:
     if supports_x86v1(flags):
         if supports_x86v2(flags):
             if supports_x86v3(flags):
