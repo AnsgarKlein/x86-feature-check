@@ -10,4 +10,5 @@ Possible valid values:
 - x86-64-v3
 - x86-64-v4
 
-This script relies on `/proc/cpuinfo` and thus only works on Linux.
+This script relies on `/proc/cpuinfo` and thus only works on Linux.  
+Because type annotations are used Python 3.5 or newer is required.

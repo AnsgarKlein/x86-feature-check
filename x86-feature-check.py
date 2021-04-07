@@ -9,7 +9,7 @@ from typing import Optional
 from typing import Set
 from typing import Union
 
-FLAG_NAMES: Dict[str, Union[str, List[str]]] = {
+FLAG_NAMES = {
     'AVX2': 'avx2',
     'AVX512BW': 'avx512bw',
     'AVX512CD': 'avx512cd',
@@ -39,9 +39,9 @@ FLAG_NAMES: Dict[str, Union[str, List[str]]] = {
     'SSE4-2': 'sse4_2',
     'SSE': 'sse',
     'SSSE3': 'ssse3',
-}
+} # type: Dict[str, Union[str, List[str]]]
 
-X86_64_REQUIRED_FEATURES: List[str] = [
+X86_64_REQUIRED_FEATURES = [
     'CMOV',
     'CMPXCHG8B',
     'FPU',
@@ -50,9 +50,9 @@ X86_64_REQUIRED_FEATURES: List[str] = [
     'SCE',
     'SSE',
     'SSE2',
-]
+] # type: List[str]
 
-X86_64_V2_REQUIRED_FEATURES: List[str] = [
+X86_64_V2_REQUIRED_FEATURES = [
     'CMPXCHG16B',
     'LAHF',
     'POPCNT',
@@ -60,9 +60,9 @@ X86_64_V2_REQUIRED_FEATURES: List[str] = [
     'SSE4-1',
     'SSE4-2',
     'SSSE3',
-]
+] # type: List[str]
 
-X86_64_V3_REQUIRED_FEATURES: List[str] = [
+X86_64_V3_REQUIRED_FEATURES = [
     'AVX',
     'AVX2',
     'BMI1',
@@ -72,15 +72,15 @@ X86_64_V3_REQUIRED_FEATURES: List[str] = [
     'LZCNT',
     'MOVBE',
     'OSXSAVE',
-]
+] # type: List[str]
 
-X86_64_V4_REQUIRED_FEATURES: List[str] = [
+X86_64_V4_REQUIRED_FEATURES = [
     'AVX512BW',
     'AVX512CD',
     'AVX512DQ',
     'AVX512F',
     'AVX512VL',
-]
+] # type: List[str]
 
 def main() -> int:
     """
