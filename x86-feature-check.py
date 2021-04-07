@@ -82,9 +82,16 @@ X86_64_V4_REQUIRED_FEATURES: List[str] = [
     'AVX512VL',
 ]
 
-def main():
+def main() -> int:
     flags = get_current_cpu_flags()
+    feature_set = get_max_feature_set(flags)
+
+    if feature_set is None:
+        print('No x86-64 feature set fully supported!', file = sys.stderr)
+        return 1
+
     print('{}'.format(get_max_feature_set(flags)))
+    return 0
 
 def get_current_cpu_flags() -> Set[str]:
     flags = set()
