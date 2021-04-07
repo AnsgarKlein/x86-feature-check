@@ -83,6 +83,13 @@ X86_64_V4_REQUIRED_FEATURES: List[str] = [
 ]
 
 def main() -> int:
+    """
+    Main function
+
+    :return: 0 on success, non-zero on error
+    :rtype: int
+    """
+
     flags = get_current_cpu_flags()
     feature_set = get_max_feature_set(flags)
 
@@ -94,6 +101,13 @@ def main() -> int:
     return 0
 
 def get_current_cpu_flags() -> Set[str]:
+    """
+    Returns CPU flags supported by current cpu.
+
+    :return: Set of cpu flags supported
+    :rtype: set
+    """
+
     flags = set()
 
     # Read /proc/cpuinfo
@@ -117,6 +131,20 @@ def get_current_cpu_flags() -> Set[str]:
     return flags
 
 def has_feature(flags: Set[str], feature: str) -> bool:
+    """
+    Checks if the given flags indicate support of a given feature.
+
+    :param flags: Set of flags to check for support of given feature
+    :type flags: set
+
+    :param feature: Feature to check support of
+    :type flags: str
+
+    :return: True if support of feature is indicated by given flags.
+        False otherwise
+    :rtype: bool
+    """
+
     if not isinstance(feature, str):
         raise Exception('Given feature is not of type str')
     if feature not in FLAG_NAMES:
@@ -132,21 +160,90 @@ def has_feature(flags: Set[str], feature: str) -> bool:
     return True in (flag in flags for flag in required_flags)
 
 def supports_feature_set(flags: Set[str], featureset: List[str]) -> bool:
+    """
+    Checks if the given flags indicate support of a given feature set.
+
+    :param flags: Set of flags to check for support of given feature set
+    :type flags: set
+
+    :param featureset: Feature set to check support of
+    :type featureset: list
+
+    :return: True if support of feature set is indicated by given flags.
+        False otherwise
+    :rtype: bool
+    """
+
     return not False in (has_feature(flags, feat) for feat in featureset)
 
 def supports_x86v1(flags: Set[str]) -> bool:
+    """
+    Checks if the given flags indicate support for x86-64 (baseline) feature set.
+
+    :param flags: Set of flags to check for support of x86-64 (baseline)
+    :type flags: set
+
+    :return: True if support of x86-64 (baseline) is indicated by given flags.
+        False otherwise
+    :rtype: bool
+    """
+
     return supports_feature_set(flags, X86_64_REQUIRED_FEATURES)
 
 def supports_x86v2(flags: Set[str]) -> bool:
+    """
+    Checks if the given flags indicate support for x86-64-v2 feature set.
+
+    :param flags: Set of flags to check for support of x86-64-v2
+    :type flags: set
+
+    :return: True if support of x86-64-v2 is indicated by given flags.
+        False otherwise
+    :rtype: bool
+    """
+
     return supports_feature_set(flags, X86_64_V2_REQUIRED_FEATURES)
 
 def supports_x86v3(flags: Set[str]) -> bool:
+    """
+    Checks if the given flags indicate support for x86-64-v3 feature set.
+
+    :param flags: Set of flags to check for support of x86-64-v3
+    :type flags: set
+
+    :return: True if support of x86-64-v3 is indicated by given flags.
+        False otherwise
+    :rtype: bool
+    """
+
     return supports_feature_set(flags, X86_64_V3_REQUIRED_FEATURES)
 
 def supports_x86v4(flags: Set[str]) -> bool:
+    """
+    Checks if the given flags indicate support for x86-64-v4 feature set.
+
+    :param flags: Set of flags to check for support of x86-64-v4
+    :type flags: set
+
+    :return: True if support of x86-64-v4 is indicated by given flags.
+        False otherwise
+    :rtype: bool
+    """
+
     return supports_feature_set(flags, X86_64_V4_REQUIRED_FEATURES)
 
 def get_max_feature_set(flags) -> Optional[str]:
+    """
+    Returns the latest supported feature set indicated by given flags.
+
+    :param flags: Set of flags to check for feature set support
+    :type flags: set
+
+    :return: The latest feature set that is supported or None if no
+        known feature set is supported
+    :rtype: str
+    """
+
     if supports_x86v1(flags):
         if supports_x86v2(flags):
             if supports_x86v3(flags):
