@@ -100,20 +100,32 @@ def main() -> int:
     print('{}'.format(get_max_feature_set(flags)))
     return 0
 
-def get_current_cpu_flags() -> Set[str]:
+def get_cpuinfo() -> str:
     """
-    Returns CPU flags supported by current cpu.
+    Returns the content of the /proc/cpuinfo file.
 
-    :return: Set of cpu flags supported
+    :return: Content of /proc/cpuinfo or empty string if not found
+    :rtype: str
+    """
+
+    # Read /proc/cpuinfo
+    try:
+        with open('/proc/cpuinfo', 'r') as f:
+            return f.read()
+    except IOError:
+        print('Error: Could not read /proc/cpuinfo', file = sys.stderr)
+        return ''
+
+def extract_cpu_flags(cpuinfo: str) -> Set[str]:
+    """
+    Extract CPU flags from /proc/cpuinfo string
+
+    :return: Set of CPU flags for which given cpuinfo string indicates support
     :rtype: set
     """
 
-    flags = set()
-
-    # Read /proc/cpuinfo
-    lines = []
-    with open('/proc/cpuinfo', 'r') as f:
-        lines = [line.strip() for line in f.readlines()]
+    # Prepare cpuinfo str
+    lines = [line.strip() for line in cpuinfo.split('\n')]
 
     # Get lines defining flags
     flag_lines = []
@@ -124,10 +136,23 @@ def get_current_cpu_flags() -> Set[str]:
     # There could be different flags in different flag lines.
     # We add all flags from all flag lines to set in order to
     # get maximum number of flags supported.
+    flags = set()
     for line in flag_lines:
         for flag in line.split(' '):
             flags.add(flag)
 
+    return flags
+
+def get_current_cpu_flags() -> Set[str]:
+    """
+    Returns CPU flags supported by current cpu.
+
+    :return: Set of cpu flags supported
+    :rtype: set
+    """
+
+    cpuinfo = get_cpuinfo()
+    flags = extract_cpu_flags(cpuinfo)
     return flags
 
 def has_feature(flags: Set[str], feature: str) -> bool:
