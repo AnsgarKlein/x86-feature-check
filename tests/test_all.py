@@ -29,8 +29,10 @@ class Test_X86Levels(unittest.TestCase):
     Map from CPU Name to expected maximum feature set
     """
     LEVELMAP = {
+        'AMD_Athlon_X2_4000+':             'x86-64',
         'AMD_Athlon_5370':                 'x86-64-v2',
         'AMD_FX8120':                      'x86-64-v2',
+        'AMD_Opteron_6174':                'x86-64',
         'AMD_EPYC_7351':                   'x86-64-v3',
         'AMD_EPYC_7401':                   'x86-64-v3',
         'AMD_EPYC_7352':                   'x86-64-v3',
@@ -44,6 +46,9 @@ class Test_X86Levels(unittest.TestCase):
         'Intel_Core_i3-8100':              'x86-64-v3',
         'Intel_Xeon_L5420':                'x86-64',
         'Intel_Xeon_L5520':                'x86-64-v2',
+        'Intel_Xeon_X5550':                'x86-64-v2',
+        'Intel_Xeon_L5640':                'x86-64-v2',
+        'Intel_Xeon_X5650':                'x86-64-v2',
         'Intel_Xeon_E5-2650':              'x86-64-v2',
         'Intel_Xeon_E5-2670v2':            'x86-64-v2',
         'Intel_Xeon_E3-1220v3':            'x86-64-v3',
