@@ -19,8 +19,8 @@ jobs:
         python-version: ${{ matrix.python-version }}
         architecture: 'x64'
 
-    - name: Run python script
-      run: python 'x86-feature-check.py'
+    - name: Run tests
+      run: python -m unittest discover --start-directory tests
 
   lint:
     name: 'Lint'
