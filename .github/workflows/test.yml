@@ -50,10 +50,14 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
 
-    - name: Install mypy
+    - name: Install mypy & pytype
       run: |
         python -m pip install --no-cache-dir --upgrade pip wheel setuptools
         python -m pip install --no-cache-dir mypy
+        python -m pip install --no-cache-dir pytype
 
     - name: Check types with mypy
       run: mypy --check-untyped-defs 'x86-feature-check.py'
+
+    - name: Check types with pytype
+      run: pytype 'x86-feature-check.py'
