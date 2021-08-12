@@ -106,7 +106,7 @@ def main() -> int:
         print('No x86-64 feature set fully supported!', file = sys.stderr)
         return 1
 
-    print('{}'.format(get_max_architecture_level(flags)))
+    print('{}'.format(feature_set))
     return 0
 
 def get_cpuinfo() -> str:
