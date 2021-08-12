@@ -41,45 +41,54 @@ FLAG_NAMES = {
     'SSSE3': 'ssse3',
 } # type: Dict[str, Union[str, List[str]]]
 
-X86_64_REQUIRED_FEATURES = [
-    'CMOV',
-    'CMPXCHG8B',
-    'FPU',
-    'FXSR',
-    'MMX',
-    'SCE',
-    'SSE',
-    'SSE2',
-] # type: List[str]
+REQUIRED_FEATURES = {
+    'x86-64-v4': [
+        'AVX512BW',
+        'AVX512CD',
+        'AVX512DQ',
+        'AVX512F',
+        'AVX512VL',
+    ],
+    'x86-64-v3': [
+        'AVX',
+        'AVX2',
+        'BMI1',
+        'BMI2',
+        'F16C',
+        'FMA',
+        'LZCNT',
+        'MOVBE',
+        'OSXSAVE',
+    ],
+    'x86-64-v2': [
+        'CMPXCHG16B',
+        'LAHF',
+        'POPCNT',
+        'SSE3',
+        'SSE4-1',
+        'SSE4-2',
+        'SSSE3',
+    ],
+    'x86-64': [
+        'CMOV',
+        'CMPXCHG8B',
+        'FPU',
+        'FXSR',
+        'MMX',
+        'SCE',
+        'SSE',
+        'SSE2',
+    ],
+} # type: Dict[str, List[str]]
 
-X86_64_V2_REQUIRED_FEATURES = [
-    'CMPXCHG16B',
-    'LAHF',
-    'POPCNT',
-    'SSE3',
-    'SSE4-1',
-    'SSE4-2',
-    'SSSE3',
-] # type: List[str]
-
-X86_64_V3_REQUIRED_FEATURES = [
-    'AVX',
-    'AVX2',
-    'BMI1',
-    'BMI2',
-    'F16C',
-    'FMA',
-    'LZCNT',
-    'MOVBE',
-    'OSXSAVE',
-] # type: List[str]
-
-X86_64_V4_REQUIRED_FEATURES = [
-    'AVX512BW',
-    'AVX512CD',
-    'AVX512DQ',
-    'AVX512F',
-    'AVX512VL',
+"""
+List of microarchitecture levels where first entry is the most advanced level
+"""
+MICROARCHITECTURE_LEVELS = [
+    'x86-64-v4',
+    'x86-64-v3',
+    'x86-64-v2',
+    'x86-64',
 ] # type: List[str]
 
 def main() -> int:
@@ -91,13 +100,13 @@ def main() -> int:
     """
 
     flags = get_current_cpu_flags()
-    feature_set = get_max_feature_set(flags)
+    feature_set = get_max_architecture_level(flags)
 
     if feature_set is None:
         print('No x86-64 feature set fully supported!', file = sys.stderr)
         return 1
 
-    print('{}'.format(get_max_feature_set(flags)))
+    print('{}'.format(get_max_architecture_level(flags)))
     return 0
 
 def get_cpuinfo() -> str:
@@ -155,7 +164,7 @@ def get_current_cpu_flags() -> Set[str]:
     flags = extract_cpu_flags(cpuinfo)
     return flags
 
-def has_feature(flags: Set[str], feature: str) -> bool:
+def supports_feature(flags: Set[str], feature: str) -> bool:
     """
     Checks if the given flags indicate support of a given feature.
 
@@ -184,99 +193,58 @@ def has_feature(flags: Set[str], feature: str) -> bool:
 
     return True in (flag in flags for flag in required_flags)
 
-def supports_feature_set(flags: Set[str], featureset: List[str]) -> bool:
+def supports_features(flags: Set[str], required_features: List[str]) -> bool:
+    """
+    Checks if the given flags indicate support of all given features.
+
+    :param flags: Set of flags to check for support of given features
+    :type flags: set
+
+    :param required_features: Features to check support of
+    :type required_features: list
+
+    :return: True if support of all given features is indicated by flags.
+        False otherwise
+    :rtype: bool
+    """
+
+    return not False in (supports_feature(flags, feat) for feat in required_features)
+
+def supports_feature_set(flags: Set[str], feature_set: str) -> bool:
     """
     Checks if the given flags indicate support of a given feature set.
 
     :param flags: Set of flags to check for support of given feature set
     :type flags: set
 
-    :param featureset: Feature set to check support of
-    :type featureset: list
+    :param feature_set: Feature set to check support of
+    :type feature_set: list
 
     :return: True if support of feature set is indicated by given flags.
         False otherwise
     :rtype: bool
     """
 
-    return not False in (has_feature(flags, feat) for feat in featureset)
+    if feature_set not in REQUIRED_FEATURES:
+        raise Exception('Unknown feature set "{}"'.format(feature_set))
 
-def supports_x86v1(flags: Set[str]) -> bool:
+    return supports_features(flags, REQUIRED_FEATURES[feature_set])
+
+def get_max_architecture_level(flags) -> Optional[str]:
     """
-    Checks if the given flags indicate support for x86-64 (baseline) feature set.
+    Returns the latest supported microarchitecture level indicated by given flags.
 
-    :param flags: Set of flags to check for support of x86-64 (baseline)
+    :param flags: Set of flags to check for microarchitecture level support
     :type flags: set
 
-    :return: True if support of x86-64 (baseline) is indicated by given flags.
-        False otherwise
-    :rtype: bool
-    """
-
-    return supports_feature_set(flags, X86_64_REQUIRED_FEATURES)
-
-def supports_x86v2(flags: Set[str]) -> bool:
-    """
-    Checks if the given flags indicate support for x86-64-v2 feature set.
-
-    :param flags: Set of flags to check for support of x86-64-v2
-    :type flags: set
-
-    :return: True if support of x86-64-v2 is indicated by given flags.
-        False otherwise
-    :rtype: bool
-    """
-
-    return supports_feature_set(flags, X86_64_V2_REQUIRED_FEATURES)
-
-def supports_x86v3(flags: Set[str]) -> bool:
-    """
-    Checks if the given flags indicate support for x86-64-v3 feature set.
-
-    :param flags: Set of flags to check for support of x86-64-v3
-    :type flags: set
-
-    :return: True if support of x86-64-v3 is indicated by given flags.
-        False otherwise
-    :rtype: bool
-    """
-
-    return supports_feature_set(flags, X86_64_V3_REQUIRED_FEATURES)
-
-def supports_x86v4(flags: Set[str]) -> bool:
-    """
-    Checks if the given flags indicate support for x86-64-v4 feature set.
-
-    :param flags: Set of flags to check for support of x86-64-v4
-    :type flags: set
-
-    :return: True if support of x86-64-v4 is indicated by given flags.
-        False otherwise
-    :rtype: bool
-    """
-
-    return supports_feature_set(flags, X86_64_V4_REQUIRED_FEATURES)
-
-def get_max_feature_set(flags) -> Optional[str]:
-    """
-    Returns the latest supported feature set indicated by given flags.
-
-    :param flags: Set of flags to check for feature set support
-    :type flags: set
-
-    :return: The latest feature set that is supported or None if no
-        known feature set is supported
+    :return: The latest microarchitecture level that is supported or None if no
+        known microarchitecture level is supported
     :rtype: str
     """
 
-    if supports_x86v1(flags):
-        if supports_x86v2(flags):
-            if supports_x86v3(flags):
-                if supports_x86v4(flags):
-                    return 'x86-64-v4'
-                return 'x86-64-v3'
-            return 'x86-64-v2'
-        return 'x86-64'
+    for microarchitecture_level in MICROARCHITECTURE_LEVELS:
+        if supports_feature_set(flags, microarchitecture_level):
+            return microarchitecture_level
 
     return None
 

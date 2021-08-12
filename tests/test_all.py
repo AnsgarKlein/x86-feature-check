@@ -84,7 +84,7 @@ class Test_X86Levels(unittest.TestCase):
                 flags = x86_feature_check.extract_cpu_flags(cpuinfo)
                 self.assertTrue(isinstance(flags, set))
 
-                feature_set = x86_feature_check.get_max_feature_set(flags)
+                feature_set = x86_feature_check.get_max_architecture_level(flags)
                 self.assertTrue(isinstance(feature_set, str))
 
                 self.assertEqual(
