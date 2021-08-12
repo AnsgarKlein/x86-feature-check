@@ -1,7 +1,7 @@
 # x86-feature-check
 
 `x86-feature-check.py` checks `/proc/cpuinfo` for CPU flags and outputs the maximum
-[x86-64 feature set](https://en.wikipedia.org/wiki/X86-64#Microarchitecture_Levels)
+[x86-64 feature set](https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels)
 that is supported.
 
 Possible valid values:
