@@ -232,7 +232,7 @@ def get_supported_feature_sets(flags) -> List[str]:
     for one_variable in globals():
         m = re.match(r'(X86_64[\w_]*)_REQUIRED_FEATURES', one_variable)
         if m is not None:
-            all_feature_sets.append((one_variable, m.group(1).lower()))
+            all_feature_sets.append((one_variable, m.group(1).lower().replace("_", "-")))
     all_feature_sets.sort()
 
     # find all supported feature sets
