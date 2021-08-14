@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import argparse
 import re
 import sys
 
@@ -91,6 +92,7 @@ MICROARCHITECTURE_LEVELS = [
     'x86-64',
 ] # type: List[str]
 
+
 def main() -> int:
     """
     Main function
@@ -98,16 +100,30 @@ def main() -> int:
     :return: 0 on success, non-zero on error
     :rtype: int
     """
+    # parse command line arguments
+    parser = argparse.ArgumentParser(description="Check for supported x86_64 feature sets.")
+    parser.add_argument("--all", action='store_true', help="show not only the latest, but all supported feature sets.")
+    args = parser.parse_args()
 
     flags = get_current_cpu_flags()
-    feature_set = get_max_architecture_level(flags)
 
-    if feature_set is None:
-        print('No x86-64 feature set fully supported!', file = sys.stderr)
-        return 1
+    if args.all:
+        feature_sets = get_all_architecture_levels(flags)
+        if len(feature_sets) == 0:
+            print('No x86-64 feature set fully supported!', file = sys.stderr)
+            return 1
 
-    print('{}'.format(feature_set))
+        print(' '.join(feature_sets))
+    else:
+        feature_set = get_max_architecture_level(flags)
+        if feature_set is None:
+            print('No x86-64 feature set fully supported!', file = sys.stderr)
+            return 1
+
+        print(feature_set)
+
     return 0
+
 
 def get_cpuinfo() -> str:
     """
@@ -124,6 +140,7 @@ def get_cpuinfo() -> str:
     except IOError:
         print('Error: Could not read /proc/cpuinfo', file = sys.stderr)
         return ''
+
 
 def extract_cpu_flags(cpuinfo: str) -> Set[str]:
     """
@@ -152,6 +169,7 @@ def extract_cpu_flags(cpuinfo: str) -> Set[str]:
 
     return flags
 
+
 def get_current_cpu_flags() -> Set[str]:
     """
     Returns CPU flags supported by current cpu.
@@ -163,6 +181,7 @@ def get_current_cpu_flags() -> Set[str]:
     cpuinfo = get_cpuinfo()
     flags = extract_cpu_flags(cpuinfo)
     return flags
+
 
 def supports_feature(flags: Set[str], feature: str) -> bool:
     """
@@ -193,6 +212,7 @@ def supports_feature(flags: Set[str], feature: str) -> bool:
 
     return True in (flag in flags for flag in required_flags)
 
+
 def supports_features(flags: Set[str], required_features: List[str]) -> bool:
     """
     Checks if the given flags indicate support of all given features.
@@ -209,6 +229,7 @@ def supports_features(flags: Set[str], required_features: List[str]) -> bool:
     """
 
     return not False in (supports_feature(flags, feat) for feat in required_features)
+
 
 def supports_feature_set(flags: Set[str], feature_set: str) -> bool:
     """
@@ -230,6 +251,7 @@ def supports_feature_set(flags: Set[str], feature_set: str) -> bool:
 
     return supports_features(flags, REQUIRED_FEATURES[feature_set])
 
+
 def get_max_architecture_level(flags) -> Optional[str]:
     """
     Returns the latest supported microarchitecture level indicated by given flags.
@@ -247,6 +269,13 @@ def get_max_architecture_level(flags) -> Optional[str]:
             return microarchitecture_level
 
     return None
+
+
+def get_all_architecture_levels(flags) -> List[str]:
+    supported = [lvl for lvl in MICROARCHITECTURE_LEVELS if supports_feature_set(flags, lvl)]
+    supported.reverse()
+    return supported
+
 
 if __name__ == '__main__':
     sys.exit(main())
