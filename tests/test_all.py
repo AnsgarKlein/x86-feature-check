@@ -68,6 +68,9 @@ class Test_X86Levels(unittest.TestCase):
         'Intel_Xeon_E5-2620v4':            'x86-64-v3',
         'Intel_Xeon_E5-2630v4':            'x86-64-v3',
         'Intel_Xeon_E5-2680v4':            'x86-64-v3',
+        'Intel_Xeon_W-1250':               'x86-64-v3',
+        'Intel_Xeon_W-1350':               'x86-64-v4',
+        'Intel_Xeon_W-2245':               'x86-64-v4',
         'Intel_Xeon_Scalable_4114_Silver': 'x86-64-v4',
         'Intel_Xeon_Scalable_6130_Gold':   'x86-64-v4',
     }
