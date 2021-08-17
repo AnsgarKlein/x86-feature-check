@@ -62,6 +62,7 @@ class Test_X86Levels(unittest.TestCase):
         'AMD_EPYC_7352':                   'x86-64-v3',
         'AMD_EPYC_7402P':                  'x86-64-v3',
         'AMD_EPYC_7452':                   'x86-64-v3',
+        'AMD_EPYC_7543':                   'x86-64-v3',
         'Intel_Core_i5-4300U':             'x86-64-v3',
         'Intel_Core_i7-4790':              'x86-64-v3',
         'Intel_Core_i5-5200U':             'x86-64-v3',
