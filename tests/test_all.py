@@ -67,6 +67,8 @@ class Test_X86Levels(unittest.TestCase):
         'Intel_Core_i7-4790':              'x86-64-v3',
         'Intel_Core_i5-5200U':             'x86-64-v3',
         'Intel_Core_i3-6100':              'x86-64-v3',
+        'Intel_Core_i5-6300U':             'x86-64-v3',
+        'Intel_Core_i5-6600T':             'x86-64-v3',
         'Intel_Core_i7-6700T':             'x86-64-v3',
         'Intel_Core_i3-7100':              'x86-64-v3',
         'Intel_Core_i3-8100':              'x86-64-v3',
