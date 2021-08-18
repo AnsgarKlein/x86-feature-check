@@ -92,6 +92,7 @@ class Test_X86Levels(unittest.TestCase):
         'Intel_Xeon_E5-4627v3':            'x86-64-v3',
         'Intel_Xeon_E5-2620v4':            'x86-64-v3',
         'Intel_Xeon_E5-2630v4':            'x86-64-v3',
+        'Intel_Xeon_E5-2667v4':            'x86-64-v3',
         'Intel_Xeon_E5-2680v4':            'x86-64-v3',
         'Intel_Xeon_W-1250':               'x86-64-v3',
         'Intel_Xeon_W-1350':               'x86-64-v4',
