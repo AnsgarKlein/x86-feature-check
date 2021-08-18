@@ -46,6 +46,23 @@ class Test_Main(unittest.TestCase):
         for flag in current_flags:
             self.assertTrue(isinstance(flag, str))
 
+class Test_FeatureFlags(unittest.TestCase):
+    def test_feature_flags(self):
+        REQUIRED_FEATURES = x86_feature_check.REQUIRED_FEATURES
+        FLAG_NAMES = x86_feature_check.FLAG_NAMES
+
+        # Create list of all feature flags defined in any feature set
+        all_feature_flags = []
+        for feature_set_name in REQUIRED_FEATURES:
+            all_feature_flags.extend(REQUIRED_FEATURES[feature_set_name])
+        all_feature_flags = sorted(list(set(all_feature_flags)))
+
+        for flag_name in all_feature_flags:
+            with self.subTest(flag_name = flag_name):
+                self.assertTrue(
+                    flag_name in FLAG_NAMES,
+                    msg = 'Flag "{}" is not known! Cannot check for support'.format(flag_name))
+
 class Test_X86Levels(unittest.TestCase):
     """
     Map from CPU Name to expected maximum feature set
