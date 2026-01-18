@@ -26,13 +26,17 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v6
 
-    - name: Install pylint
+    - name: Install dev dependencies
       run: |
+        python -m venv venv
+        source venv/bin/activate
         python -m pip install --no-cache-dir --upgrade pip wheel setuptools
-        python -m pip install --no-cache-dir pylint
+        python -m pip install --no-cache-dir --upgrade -r requirements-dev.txt
 
     - name: Lint with pylint
-      run: pylint -E 'x86-feature-check.py'
+      run: |
+        source venv/bin/activate
+        pylint -E 'x86-feature-check.py'
 
   typecheck:
     name: 'Type Check'
@@ -44,14 +48,19 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v6
 
-    - name: Install mypy & pytype
+    - name: Install dev dependencies
       run: |
+        python -m venv venv
+        source venv/bin/activate
         python -m pip install --no-cache-dir --upgrade pip wheel setuptools
-        python -m pip install --no-cache-dir mypy
-        python -m pip install --no-cache-dir pytype
+        python -m pip install --no-cache-dir --upgrade -r requirements-dev.txt
 
     - name: Check types with mypy
-      run: mypy --check-untyped-defs 'x86-feature-check.py'
+      run: |
+        source venv/bin/activate
+        mypy --check-untyped-defs 'x86-feature-check.py'
 
     - name: Check types with pytype
-      run: pytype 'x86-feature-check.py'
+      run: |
+        source venv/bin/activate
+        pytype 'x86-feature-check.py'
