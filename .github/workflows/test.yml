@@ -36,31 +36,4 @@ jobs:
     - name: Lint with pylint
       run: |
         source venv/bin/activate
-        pylint -E 'x86-feature-check.py'
-
-  typecheck:
-    name: 'Type Check'
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v6
-
-    - name: Set up Python
-      uses: actions/setup-python@v6
-
-    - name: Install dev dependencies
-      run: |
-        python -m venv venv
-        source venv/bin/activate
-        python -m pip install --no-cache-dir --upgrade pip wheel setuptools
-        python -m pip install --no-cache-dir --upgrade -r requirements-dev.txt
-
-    - name: Check types with mypy
-      run: |
-        source venv/bin/activate
-        mypy --check-untyped-defs 'x86-feature-check.py'
-
-    - name: Check types with pytype
-      run: |
-        source venv/bin/activate
-        pytype 'x86-feature-check.py'
+        scripts/lint.sh
